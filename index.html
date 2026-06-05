@@ -2535,7 +2535,7 @@ body.quizPageOpen #messageBox{
       top:calc(132px + var(--safeTop,0px)) !important;
       z-index:2147483001 !important;
       display:none;
-      width:min(360px,calc(100vw - 20px)) !important;
+      width:min(460px,calc(100vw - 20px)) !important;
       max-height:calc(100vh - 155px) !important;
       overflow:auto !important;
       padding:12px !important;
@@ -2565,6 +2565,28 @@ body.quizPageOpen #messageBox{
       display:grid !important;
       grid-template-columns:1fr 1fr !important;
       gap:7px !important;
+    }
+    #debugJumpPanel .debugStageBtn{
+      min-height:70px !important;
+      display:flex !important;
+      flex-direction:column !important;
+      align-items:center !important;
+      justify-content:center !important;
+      gap:4px !important;
+      line-height:1.12 !important;
+      text-align:center !important;
+    }
+    #debugJumpPanel .debugStageMain{
+      display:block !important;
+      font-size:14px !important;
+      color:#2b1705 !important;
+    }
+    #debugJumpPanel .debugStageType{
+      display:block !important;
+      font-size:10.5px !important;
+      font-weight:1000 !important;
+      color:#4b2b0a !important;
+      opacity:.92 !important;
     }
     #debugJumpPanel button,
     #debugPasswordCard button{
@@ -2964,6 +2986,20 @@ body.quizPageOpen #messageBox{
       <p>Enter password to open chamber jump tools.</p>
       <input id="debugPasswordInput" type="password" inputmode="numeric" autocomplete="off" placeholder="Password">
       <div id="debugPasswordError">Wrong password. Try again.</div>
+      <div class="cheatDigitPad" aria-label="Debug number pad">
+        <button type="button" data-debug-num="1">1</button>
+        <button type="button" data-debug-num="2">2</button>
+        <button type="button" data-debug-num="3">3</button>
+        <button type="button" data-debug-num="4">4</button>
+        <button type="button" data-debug-num="5">5</button>
+        <button type="button" data-debug-num="6">6</button>
+        <button type="button" data-debug-num="7">7</button>
+        <button type="button" data-debug-num="8">8</button>
+        <button type="button" data-debug-num="9">9</button>
+        <button type="button" id="debugPasswordBack" class="cheatDarkBtn">⌫</button>
+        <button type="button" data-debug-num="0">0</button>
+        <button type="button" id="debugPasswordClear" class="cheatDarkBtn">Clear</button>
+      </div>
       <div class="debugModalActions">
         <button id="debugPasswordCancel" type="button" class="debugDarkBtn">Cancel</button>
         <button id="debugPasswordUnlock" type="button">Unlock</button>
@@ -3002,14 +3038,14 @@ body.quizPageOpen #messageBox{
 
   <div id="debugJumpPanel" aria-label="Developer chamber jump panel">
     <h3>Developer Jump Panel</h3>
-    <div class="debugNote">Password accepted. Choose a chamber for testing.</div>
+    <div class="debugNote">Password accepted. Choose a chamber for testing. The question type is shown under each chamber; questions are randomised within that type.</div>
     <div class="debugGrid">
-      <button type="button" data-debug-jump="1">C1 Start</button>
-      <button type="button" data-debug-jump="2">C2 Torch</button>
-      <button type="button" data-debug-jump="3">C3 Scarab</button>
-      <button type="button" data-debug-jump="4">C4 Bridge</button>
-      <button type="button" data-debug-jump="5">C5 Villagers</button>
-      <button type="button" data-debug-jump="6">C6 Future</button>
+      <button type="button" data-debug-jump="1" class="debugStageBtn"><span class="debugStageMain">C1 Start</span><span class="debugStageType">1-digit × 1-digit<br>Find the product</span></button>
+      <button type="button" data-debug-jump="2" class="debugStageBtn"><span class="debugStageMain">C2 Torch</span><span class="debugStageType">2-digit × 1-digit<br>No regrouping</span></button>
+      <button type="button" data-debug-jump="3" class="debugStageBtn"><span class="debugStageMain">C3 Scarab</span><span class="debugStageType">2-digit × 1-digit<br>Simple regrouping</span></button>
+      <button type="button" data-debug-jump="4" class="debugStageBtn"><span class="debugStageMain">C4 Bridge</span><span class="debugStageType">2-digit × 1-digit<br>Harder regrouping</span></button>
+      <button type="button" data-debug-jump="5" class="debugStageBtn"><span class="debugStageMain">C5 Villagers</span><span class="debugStageType">3-digit × 1-digit<br>Mixed regrouping</span></button>
+      <button type="button" data-debug-jump="6" class="debugStageBtn"><span class="debugStageMain">C6 Sun Gate</span><span class="debugStageType">3-digit × 1-digit<br>4-digit product</span></button>
       <button type="button" id="debugUnlockPrevious" class="debugDarkBtn">Unlock Previous</button>
       <button type="button" id="debugClosePanel" class="debugDarkBtn">Close</button>
       <button type="button" id="debugClearProgress" class="debugDangerBtn">Clear Saved Progress</button>
@@ -3034,17 +3070,16 @@ body.quizPageOpen #messageBox{
       <div id="quickHowToPanel" class="cleanHelpPanel">
         <p><b>How to Play</b></p>
         <ol>
-          <li><b>Desktop:</b> WASD to move. Use arrow keys or drag to look. Press <b>E</b> to inspect.</li>
-          <li><b>Mobile:</b> left pad moves, right pad looks. Tap the prompt to inspect.</li>
-          <li>Walk near the tablet, torch, numbered scarab, bridge step, or villager.</li>
-          <li>In C3, walk near the numbered scarab pad and press the prompt.</li>
-          <li>In C5, walk near the next villager and press the prompt.</li>
-          <li>Solve the multiplication algorithm. The object completes automatically.</li>
-          <li>Collect all treasures and the <b>Key of Product</b>.</li>
+          <li><b>Move and look around.</b> Desktop: use <b>WASD</b> to walk, arrow keys or drag to look, and <b>E</b> to inspect. Mobile: use the left pad to move, the right pad to look, then tap the prompt.</li>
+          <li><b>Find the next glowing object.</b> Go near the tablet, torch button, scarab pad, bridge step, villager, or sun seal. The game will tell you what to inspect next.</li>
+          <li><b>Solve the Ancient Multiplication Lock.</b> Fill in the algorithm from ones to tens to hundreds. Use the place value mat on the left to understand grouping and regrouping.</li>
+          <li><b>Progress gradually:</b> C1 basic facts → C2 2-digit no regrouping → C3 simple regrouping → C4 harder regrouping → C5 3-digit mixed regrouping → C6 3-digit questions with 4-digit products.</li>
+          <li><b>Every run has variety.</b> Questions are randomised within the correct chamber type, so pupils practise the same skill but do not always see the same numbers.</li>
+          <li><b>Complete each chamber.</b> Solve all 6 challenges, collect the jewel or key, then move forward to rescue the villagers and escape.</li>
         </ol>
         <div class="resetWarningBox compactReset">
           <b>Reset Progress</b><br>
-          Use this only to restart from Chamber 1.
+          Use this only if you want to restart from Chamber 1 and generate a fresh run of questions.
           <div class="resetButtonWrap">
             <button class="coverBtn secondary" id="coverResetBtnTop" type="button">Hold 2s to Reset</button>
           </div>
@@ -3126,7 +3161,7 @@ body.quizPageOpen #messageBox{
         <div class="quizBarRight">
           <button class="pillBtn" id="btnToggleMat">Hide Place Value Mat</button>
           <button class="pillBtn" id="btnToggleKeyboard">Keyboard: 2 Rows</button>
-          <button class="pillBtn" id="btnTeacherSolve" title="Cheat Solve shortcut: password 1124">🔒 Cheat Solve</button>
+          <button class="pillBtn" id="btnTeacherSolve" title="Cheat Solve shortcut: password 67">🔒 Cheat Solve</button>
           <button class="pillBtn dark" id="btnClosePuzzle">Close</button>
         </div>
       </div>
@@ -4777,7 +4812,7 @@ const wrap = document.getElementById("gameWrap");
     }
 
     function randomQuestionForScarab(index=activeScarabIndex){
-      // Stage 3: 3-digit × 1-digit. Fixed by scarab number.
+      // Stage 3: 2-digit × 1-digit simple regrouping. Cached by scarab number for this run.
       return fixedQuestionForMode("scarab", index);
     }
 
@@ -4885,7 +4920,7 @@ function showLightBeam(){
       quiz.solvedTotal = 0;
       loadQuestion(randomQuestionForVillager(idx));
       openPuzzle();
-      setFeedback("hint", `Spellbound Villagers Hall: solve this regrouping question to free Villager ${idx+1}.`);
+      setFeedback("hint", `Spellbound Villagers Hall: solve this 3-digit × 1-digit mixed regrouping question to free Villager ${idx+1}.`);
     }
 
     function castWandAtVillager(){
@@ -5473,7 +5508,24 @@ function addTablet(){
     // Jump checkpoint functions removed for pupil version.
 
     const moveKeys = {forward:false,back:false,left:false,right:false,lookLeft:false,lookRight:false,lookUp:false,lookDown:false};
+    let dragging = false, lastX = 0, lastY = 0;
+    let padPointerActive = false;
     function setMoveKey(action,value){ if(action in moveKeys) moveKeys[action]=value; }
+    function stopAllControls(reason=""){
+      Object.keys(moveKeys).forEach(k=>moveKeys[k]=false);
+      padPointerActive = false;
+      dragging = false;
+      document.querySelectorAll('[data-hold].active,.padBtn.active').forEach(btn=>btn.classList.remove('active'));
+      try{ renderer?.domElement?.blur?.(); }catch(e){}
+    }
+    window.stopAllControls = stopAllControls;
+    window.addEventListener('blur',()=>stopAllControls('window-blur'));
+    window.addEventListener('pagehide',()=>stopAllControls('pagehide'));
+    document.addEventListener('visibilitychange',()=>{ if(document.hidden) stopAllControls('hidden'); });
+    window.addEventListener('pointerup',()=>{ if(padPointerActive) stopAllControls('global-pointerup'); }, {passive:true});
+    window.addEventListener('pointercancel',()=>{ if(padPointerActive) stopAllControls('global-pointercancel'); }, {passive:true});
+    window.addEventListener('touchend',()=>{ if(padPointerActive) stopAllControls('global-touchend'); }, {passive:true});
+    window.addEventListener('touchcancel',()=>{ if(padPointerActive) stopAllControls('global-touchcancel'); }, {passive:true});
 
     window.addEventListener("keydown",(e)=>{
       const k = e.key.toLowerCase();
@@ -5485,6 +5537,7 @@ function addTablet(){
       if(typingPassword) return;
       const puzzleOpenForKeys = modalShade.style.display === "flex" || modalShade.style.display === "block";
       if(puzzleOpenForKeys){
+        stopAllControls('puzzle-key-trap');
         if(e.ctrlKey && e.shiftKey && k === "s"){
           e.preventDefault();
           teacherSolveCurrentQuestion();
@@ -5530,17 +5583,31 @@ function addTablet(){
     document.getElementById("wandBtn").addEventListener("click",(e)=>{e.preventDefault(); castWandAtVillager();});
     document.querySelectorAll("[data-hold]").forEach(btn=>{
       const action = btn.dataset.hold;
-      const down = ev => {ev.preventDefault();btn.classList.add("active");setMoveKey(action,true);};
-      const up = ev => {ev.preventDefault();btn.classList.remove("active");setMoveKey(action,false);};
+      const down = ev => {
+        ev.preventDefault();
+        padPointerActive = true;
+        try{btn.setPointerCapture?.(ev.pointerId);}catch(e){}
+        btn.classList.add("active");
+        setMoveKey(action,true);
+      };
+      const up = ev => {
+        ev.preventDefault();
+        btn.classList.remove("active");
+        setMoveKey(action,false);
+        try{btn.releasePointerCapture?.(ev.pointerId);}catch(e){}
+        if(!document.querySelector('[data-hold].active')) padPointerActive = false;
+      };
       btn.addEventListener("pointerdown",down);
       btn.addEventListener("pointerup",up);
       btn.addEventListener("pointercancel",up);
       btn.addEventListener("pointerleave",up);
+      btn.addEventListener("lostpointercapture",up);
+      btn.addEventListener("touchend",up,{passive:false});
+      btn.addEventListener("touchcancel",up,{passive:false});
       btn.addEventListener("contextmenu",ev=>ev.preventDefault());
       btn.setAttribute("draggable","false");
     });
 
-    let dragging = false, lastX=0, lastY=0;
     renderer.domElement.addEventListener("pointerdown",(e)=>{
       if(modalShade.style.display==="flex" || modalShade.style.display==="block") return;
       dragging = true; lastX=e.clientX; lastY=e.clientY;
@@ -5556,6 +5623,8 @@ function addTablet(){
     });
     renderer.domElement.addEventListener("pointerup",()=>dragging=false);
     renderer.domElement.addEventListener("pointercancel",()=>dragging=false);
+    renderer.domElement.addEventListener("pointerleave",()=>dragging=false);
+    renderer.domElement.addEventListener("lostpointercapture",()=>dragging=false);
     window.addEventListener("contextmenu",e=>e.preventDefault());
 
     function collides(x,z){
@@ -5751,7 +5820,7 @@ function addTablet(){
         quiz.solvedTotal = 0;
         loadQuestion(randomQuestionForScarab(idx));
         openPuzzle();
-        setFeedback("hint", `Scarab ${idx+1}: solve this 3-digit × 1-digit multiplication algorithm. When correct, this scarab will light up.`);
+        setFeedback("hint", `Scarab ${idx+1}: solve this 2-digit × 1-digit simple regrouping question. When correct, this scarab will light up.`);
       }
       if(selectedTargetId.startsWith("sandBtn")){
         const idx = Number(selectedTargetId.replace("sandBtn",""));
@@ -5830,6 +5899,7 @@ function addTablet(){
     }
 
 function openPuzzle(){
+      stopAllControls('open-puzzle');
       currentTarget = null; // anti-stale debug: avoid reusing the previous object prompt
       document.documentElement.classList.add("quizPageOpen");
       document.body.classList.add("quizPageOpen");
@@ -5847,6 +5917,7 @@ function openPuzzle(){
       setTimeout(()=>setActiveEntry(document.getElementById("currentDigitInput")),60);
     }
     function closePuzzle(){
+      stopAllControls('close-puzzle');
       currentTarget = null; // anti-stale debug: force fresh nearest-object detection
       modalShade.style.display = "none";
       modalShade.classList.remove("showScroll");
@@ -5947,10 +6018,9 @@ function openPuzzle(){
     function openFifthDoorToVillagers(){
       if(window.fifthDoorOpen) return;
       window.fifthDoorOpen = true;
-      // Villagers direction sign removed. Keep any old object hidden and non-blocking.
       if(window.villagerHallArrowSign){
-        window.villagerHallArrowSign.visible = false;
-        if(window.villagerHallArrowSign.userData && window.villagerHallArrowSign.userData.blocker) window.villagerHallArrowSign.userData.blocker.active = false;
+        window.villagerHallArrowSign.visible = true;
+        if(window.villagerHallArrowSign.userData && window.villagerHallArrowSign.userData.blocker) window.villagerHallArrowSign.userData.blocker.active = true;
       }
       if(window.fifthDoorBlocker) window.fifthDoorBlocker.active = false;
       syncDoorBlockers();
@@ -6377,101 +6447,178 @@ function openPuzzle(){
     };
 
     const STAGES = [
-      { name:"Starting Chamber", slight:"1-digit × 1-digit — Find the Product", digits:1, type:"any", mode:"starting" }
+      { name:"Starting Chamber", slight:"1-digit × 1-digit — Basic multiplication facts", digits:1, type:"facts", mode:"starting" }
     ];
 
-    // Timetable coverage plan:
-    // Stage 1 and 2 lean towards ×1 to ×5, but still include higher facts.
-    // Stage 3 to 5 lean towards ×6 to ×9, but still include some earlier facts.
+    // Gradual question framework:
+    // C1: 1-digit × 1-digit basic facts.
+    // C2: 2-digit × 1-digit with no regrouping.
+    // C3: 2-digit × 1-digit with simple regrouping, product still below 100.
+    // C4: 2-digit × 1-digit with harder regrouping, product becomes 3 digits.
+    // C5: 3-digit × 1-digit with mixed regrouping, product stays below 1000.
+    // C6: 3-digit × 1-digit with regrouping to a 4-digit product.
+    // Questions are generated randomly inside each framework and guarded against repeats in the same run.
 
-    const UNIQUE_QUESTION_BANKS = {
-      starting:[
-        {multiplicand:6,multiplier:7},
-        {multiplicand:8,multiplier:4},
-        {multiplicand:9,multiplier:5},
-        {multiplicand:7,multiplier:8},
-        {multiplicand:4,multiplier:6},
-        {multiplicand:3,multiplier:9}
-      ],
-      torch:[
-        {multiplicand:12,multiplier:3},
-        {multiplicand:21,multiplier:4},
-        {multiplicand:32,multiplier:3},
-        {multiplicand:41,multiplier:2},
-        {multiplicand:11,multiplier:5},
-        {multiplicand:22,multiplier:4}
-      ],
-      scarab:[
-        {multiplicand:123,multiplier:3},
-        {multiplicand:214,multiplier:2},
-        {multiplicand:128,multiplier:7},
-        {multiplicand:143,multiplier:6},
-        {multiplicand:109,multiplier:8},
-        {multiplicand:132,multiplier:7}
-      ],
-      sand:[
-        {multiplicand:27,multiplier:6},
-        {multiplicand:38,multiplier:7},
-        {multiplicand:49,multiplier:8},
-        {multiplicand:57,multiplier:9},
-        {multiplicand:68,multiplier:5},
-        {multiplicand:76,multiplier:4}
-      ],
-      villager:[
-        {multiplicand:36,multiplier:6},
-        {multiplicand:47,multiplier:7},
-        {multiplicand:58,multiplier:8},
-        {multiplicand:69,multiplier:9},
-        {multiplicand:74,multiplier:5},
-        {multiplicand:89,multiplier:3}
-      ],
-      sun:[
-        {multiplicand:326,multiplier:4},
-        {multiplicand:487,multiplier:3},
-        {multiplicand:618,multiplier:5},
-        {multiplicand:734,multiplier:6},
-        {multiplicand:859,multiplier:7},
-        {multiplicand:928,multiplier:8}
-      ]
+    const QUESTION_FRAMEWORK = {
+      starting:{debug:"1-digit × 1-digit — Basic facts", short:"basic facts"},
+      torch:{debug:"2-digit × 1-digit — No regrouping", short:"2-digit no regrouping"},
+      scarab:{debug:"2-digit × 1-digit — Simple regrouping", short:"simple regrouping"},
+      sand:{debug:"2-digit × 1-digit — Harder regrouping", short:"harder regrouping"},
+      villager:{debug:"3-digit × 1-digit — Mixed regrouping", short:"3-digit mixed regrouping"},
+      sun:{debug:"3-digit × 1-digit — 4-digit product", short:"4-digit product"}
     };
 
-    /*
-      QUESTION BANK VALIDATION NOTE:
-      - 36 questions total.
-      - No exact repeated multiplication question.
-      - No repeated product answer.
-      - Stage 2 is no-regrouping 2d × 1d.
-      - Stages 4 and 5 are regrouping 2d × 1d.
-      - Stage 6 is regrouping 3d × 1d with 4-digit products.
-    */
+    const QUESTION_CACHE = Object.create(null);
+    const USED_QUESTION_KEYS = new Set();
+    const USED_PRODUCT_KEYS = new Set();
 
-    function bankQuestionForMode(mode,index=0){
-      const bank = UNIQUE_QUESTION_BANKS[mode];
-      if(!bank || !bank.length) return null;
-      const q = bank[Math.max(0,index) % bank.length];
+    function resetQuestionRandomisation(){
+      Object.keys(QUESTION_CACHE).forEach(k=>delete QUESTION_CACHE[k]);
+      USED_QUESTION_KEYS.clear();
+      USED_PRODUCT_KEYS.clear();
+    }
+
+    function cloneQuestion(q){
       return {multiplicand:q.multiplicand, multiplier:q.multiplier};
     }
 
-    function fixedQuestionForMode(mode,index=0){
-      // Strong anti-repeat guard:
-      // One-question chamber challenges must use their object index directly.
-      // Do not rely on quiz.questionInStage because it resets to 1 for every object.
-      const q = bankQuestionForMode(mode, Math.max(0, Number(index) || 0));
-      if(q) return q;
-      return randomQuestionForStage({digits:1,type:"any",mode:"starting",index:0});
+    function questionKey(q){
+      return `${q.multiplicand}x${q.multiplier}`;
     }
 
-    const MULTIPLIER_SEQUENCES = {
-      starting:[1,2,3,4,5,6],
-      torch:[1,2,3,4,5,7],
-      scarab:[6,7,8,9,6,8],
-      sand:[6,7,8,9,5,4],
-      villager:[6,7,8,9,3,5]
-    };
+    function productKey(q){
+      return String(q.multiplicand * q.multiplier);
+    }
 
-    function multiplierForMode(mode, index=0){
-      const seq = MULTIPLIER_SEQUENCES[mode] || MULTIPLIER_SEQUENCES.starting;
-      return seq[Math.max(0, index) % seq.length];
+    function digitLength(n){
+      return String(Math.abs(Number(n) || 0)).length;
+    }
+
+    function carryProfileForQuestion(multiplicand,multiplier){
+      const s = String(multiplicand).split("").reverse().map(Number);
+      let carry = 0;
+      let hasCarry = false;
+      let onesCarry = false;
+      let finalCarry = false;
+      let carryCount = 0;
+      for(let i=0;i<s.length;i++){
+        const total = s[i] * multiplier + carry;
+        const out = Math.floor(total / 10);
+        if(out > 0){
+          hasCarry = true;
+          carryCount += 1;
+          if(i === 0) onesCarry = true;
+          if(i === s.length - 1) finalCarry = true;
+        }
+        carry = out;
+      }
+      return {hasCarry, onesCarry, finalCarry, carryCount, product:multiplicand * multiplier};
+    }
+
+    function pushQuestionCandidate(list,multiplicand,multiplier){
+      const q = {multiplicand, multiplier};
+      if(multiplicand < 1 || multiplier < 1) return;
+      if(multiplier > 9) return;
+      if(list.some(item=>item.multiplicand === q.multiplicand && item.multiplier === q.multiplier)) return;
+      list.push(q);
+    }
+
+    function shuffledCopy(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+
+    function buildQuestionCandidates(mode){
+      const list = [];
+
+      if(mode === "starting"){
+        for(let a=2;a<=9;a++){
+          for(let m=2;m<=9;m++) pushQuestionCandidate(list,a,m);
+        }
+      }
+
+      if(mode === "torch"){
+        for(let n=12;n<=98;n++){
+          if(n % 10 === 0) continue;
+          for(let m=2;m<=9;m++){
+            const c = carryProfileForQuestion(n,m);
+            if(digitLength(n) === 2 && !c.hasCarry && c.product < 1000) pushQuestionCandidate(list,n,m);
+          }
+        }
+      }
+
+      if(mode === "scarab"){
+        for(let n=12;n<=49;n++){
+          if(n % 10 === 0) continue;
+          for(let m=2;m<=9;m++){
+            const c = carryProfileForQuestion(n,m);
+            if(digitLength(n) === 2 && c.onesCarry && !c.finalCarry && c.product < 100) pushQuestionCandidate(list,n,m);
+          }
+        }
+      }
+
+      if(mode === "sand"){
+        for(let n=23;n<=98;n++){
+          if(n % 10 === 0) continue;
+          for(let m=3;m<=9;m++){
+            const c = carryProfileForQuestion(n,m);
+            if(digitLength(n) === 2 && c.hasCarry && c.product >= 100 && c.product < 1000) pushQuestionCandidate(list,n,m);
+          }
+        }
+      }
+
+      if(mode === "villager"){
+        for(let n=123;n<=499;n++){
+          if(n % 10 === 0) continue;
+          if(hasRepeatedDigitPattern(n)) continue;
+          for(let m=2;m<=9;m++){
+            const c = carryProfileForQuestion(n,m);
+            if(digitLength(n) === 3 && c.hasCarry && c.product >= 100 && c.product < 1000) pushQuestionCandidate(list,n,m);
+          }
+        }
+      }
+
+      if(mode === "sun"){
+        for(let n=126;n<=999;n++){
+          if(n % 10 === 0) continue;
+          if(hasRepeatedDigitPattern(n)) continue;
+          for(let m=2;m<=9;m++){
+            const c = carryProfileForQuestion(n,m);
+            if(digitLength(n) === 3 && c.hasCarry && c.product >= 1000 && c.product <= 9999) pushQuestionCandidate(list,n,m);
+          }
+        }
+      }
+
+      return list;
+    }
+
+    function chooseQuestionForMode(mode,index=0){
+      const safeMode = QUESTION_FRAMEWORK[mode] ? mode : "starting";
+      const safeIndex = Math.max(0, Number(index) || 0);
+      const cacheKey = `${safeMode}:${safeIndex}`;
+      if(QUESTION_CACHE[cacheKey]) return cloneQuestion(QUESTION_CACHE[cacheKey]);
+
+      const candidates = shuffledCopy(buildQuestionCandidates(safeMode));
+      let chosen = candidates.find(q=>!USED_QUESTION_KEYS.has(questionKey(q)) && !USED_PRODUCT_KEYS.has(productKey(q)));
+      if(!chosen) chosen = candidates.find(q=>!USED_QUESTION_KEYS.has(questionKey(q)));
+      if(!chosen) chosen = candidates[safeIndex % Math.max(1,candidates.length)] || {multiplicand:6,multiplier:7};
+
+      QUESTION_CACHE[cacheKey] = cloneQuestion(chosen);
+      USED_QUESTION_KEYS.add(questionKey(chosen));
+      USED_PRODUCT_KEYS.add(productKey(chosen));
+      return cloneQuestion(chosen);
+    }
+
+    function bankQuestionForMode(mode,index=0){
+      return chooseQuestionForMode(mode,index);
+    }
+
+    function fixedQuestionForMode(mode,index=0){
+      return chooseQuestionForMode(mode,index);
     }
 
     function currentModeQuestionIndex(mode){
@@ -6720,24 +6867,24 @@ function openPuzzle(){
       $("eqText").textContent = `${question.multiplicand} × ${question.multiplier} =`;
       $("answerBox").textContent = state.done >= steps.length ? answerString() : "?";
       if(activeQuizMode === "torch"){
-        $("stageHudText").textContent = `2 / 5`;
+        $("stageHudText").textContent = `2 / 6`;
         $("quizHudText").textContent = `${torchLitCount + 1} / ${TORCH_TOTAL}`;
         $("stageNameText").textContent = `Stage 2: Torch Corridor — 2d × 1d, no regrouping`;
         $("progressText").textContent = `Torch ${torchLitCount + 1} of ${TORCH_TOTAL}`;
       }else if(activeQuizMode === "scarab"){
-        $("stageHudText").textContent = `3 / 5`;
+        $("stageHudText").textContent = `3 / 6`;
         $("quizHudText").textContent = `${scarabLightedCount + 1} / 6`;
-        $("stageNameText").textContent = `Stage 3: Scarab Puzzle Chamber — varied 3d × 1d`;
+        $("stageNameText").textContent = `Stage 3: Scarab Puzzle Chamber — 2d × 1d, simple regrouping`;
         $("progressText").textContent = `Scarab ${scarabLightedCount + 1} of 6`;
       }else if(activeQuizMode === "sand"){
-        $("stageHudText").textContent = `4 / 5`;
+        $("stageHudText").textContent = `4 / 6`;
         $("quizHudText").textContent = `${sandStableCount + 1} / 6`;
-        $("stageNameText").textContent = `Stage 4: Bridge Crossing Chamber — 2d × 1d, with regrouping`;
+        $("stageNameText").textContent = `Stage 4: Bridge Crossing Chamber — 2d × 1d, harder regrouping`;
         $("progressText").textContent = `Bridge Step ${Math.min(sandStableCount + 1, 6)} of 6`;
       }else if(activeQuizMode === "villager"){
         $("stageHudText").textContent = `5 / 6`;
         $("quizHudText").textContent = `${villagerFreedCount + 1} / 6`;
-        $("stageNameText").textContent = `Stage 5: Spellbound Villagers Hall — Magic Wand Regrouping`;
+        $("stageNameText").textContent = `Stage 5: Spellbound Villagers Hall — 3d × 1d, mixed regrouping`;
         $("progressText").textContent = `Villager ${Math.min(villagerFreedCount + 1, 6)} of 6`;
       }else if(activeQuizMode === "sun"){
         $("stageHudText").textContent = `6 / 6`;
@@ -6917,7 +7064,7 @@ function openPuzzle(){
     }
 
     function randomQuestionForVillager(index=activeVillagerIndex){
-      // Stage 5: 2-digit × 1-digit with regrouping. Fixed by villager number.
+      // Stage 5: 3-digit × 1-digit mixed regrouping. Cached by villager number for this run.
       return fixedQuestionForMode("villager", index);
     }
 
@@ -7208,30 +7355,57 @@ function openPuzzle(){
       setActiveEntry(activeEntry);
     }
 
-    const TEACHER_SOLVE_PASSWORD = "1124";
+    const TEACHER_SOLVE_PASSWORD = "67";
     let teacherSolveUnlocked = false;
 
     function updateTeacherSolveButton(){
       const btn = $("btnTeacherSolve");
       if(!btn) return;
       btn.classList.toggle("unlocked", teacherSolveUnlocked);
-      btn.textContent = teacherSolveUnlocked ? "⚡ Solve & Next" : "🔒 Teacher Solve";
-      btn.title = teacherSolveUnlocked ? "Cheat Solve is unlocked for this session" : "Cheat Solve password required";
+      btn.textContent = teacherSolveUnlocked ? "⚡ Cheat Solve" : "🔒 Cheat Solve";
+      btn.title = teacherSolveUnlocked ? "Cheat Solve is unlocked for this session" : "Cheat Solve password required: 67";
+    }
+
+    function showCheatPasswordPanel(){
+      stopAllControls('show-cheat-password');
+      const overlay = $("cheatPasswordOverlay");
+      const input = $("cheatPasswordInput");
+      const err = $("cheatPasswordError");
+      if(!overlay) return;
+      overlay.style.display = "flex";
+      if(err) err.style.display = "none";
+      if(input){
+        input.value = "";
+        setTimeout(()=>{try{input.focus({preventScroll:true});}catch(e){try{input.focus();}catch(_){}}},80);
+      }
+    }
+
+    function hideCheatPasswordPanel(){
+      stopAllControls('hide-cheat-password');
+      const overlay = $("cheatPasswordOverlay");
+      if(overlay) overlay.style.display = "none";
+    }
+
+    function acceptCheatPassword(){
+      const input = $("cheatPasswordInput");
+      const err = $("cheatPasswordError");
+      const value = input ? String(input.value || "").trim() : "";
+      if(value === TEACHER_SOLVE_PASSWORD){
+        teacherSolveUnlocked = true;
+        updateTeacherSolveButton();
+        hideCheatPasswordPanel();
+        setFeedback("hint","<b>Cheat Solve unlocked.</b> Press <b>⚡ Cheat Solve</b> again, or use <b>Ctrl + Shift + S</b>, to solve quickly.");
+        teacherSolveCurrentQuestion();
+      }else{
+        if(err) err.style.display = "block";
+        if(input) input.select();
+        playWrong();
+      }
     }
 
     function unlockTeacherSolve(){
       if(teacherSolveUnlocked) return true;
-      const value = window.prompt("Teacher password:");
-      if(String(value || "").trim() === TEACHER_SOLVE_PASSWORD){
-        teacherSolveUnlocked = true;
-        updateTeacherSolveButton();
-        setFeedback("hint","<b>Teacher Solve unlocked.</b> Press it again or use <b>Ctrl + Shift + S</b> to solve and move on quickly.");
-        return true;
-      }
-      if(value !== null){
-        setFeedback("bad","Teacher password is not correct.");
-        playWrong();
-      }
+      showCheatPasswordPanel();
       return false;
     }
 
@@ -7387,7 +7561,7 @@ function openPuzzle(){
 
     /* ===== Password-protected visible debug panel wiring ===== */
     (function setupVisiblePasswordDebugPanel(){
-      const DEBUG_PASSWORD = "1124";
+      const DEBUG_PASSWORD = "67";
 
       const debugOpenBtn = document.getElementById("debugOpenBtn");
       const pwOverlay = document.getElementById("debugPasswordOverlay");
@@ -7404,6 +7578,7 @@ function openPuzzle(){
       }
 
       function showDebugPassword(){
+        stopAllControls('show-debug-password');
         if(!pwOverlay) return;
         pwOverlay.style.display = "flex";
         if(pwError) pwError.style.display = "none";
@@ -7414,15 +7589,18 @@ function openPuzzle(){
       }
 
       function hideDebugPassword(){
+        stopAllControls('hide-debug-password');
         if(pwOverlay) pwOverlay.style.display = "none";
       }
 
       function showDebugPanel(){
+        stopAllControls('show-debug-panel');
         hideDebugPassword();
         if(panel) panel.style.display = "block";
       }
 
       function resetDebugState(){
+        try{ resetQuestionRandomisation(); }catch(e){}
         doorOpen = false;
         rubyVisible = false;
         rubyCollected = false;
@@ -7540,6 +7718,7 @@ function openPuzzle(){
       }
 
       function jumpToDebugChamber(chamber){
+        stopAllControls('debug-jump');
         try{ closePuzzle(); }catch(e){}
         applyDebugStateForChamber(chamber);
 
@@ -7577,6 +7756,20 @@ function openPuzzle(){
           hideDebugPassword();
         });
       }
+
+      const pwBack = document.getElementById("debugPasswordBack");
+      const pwClear = document.getElementById("debugPasswordClear");
+      document.querySelectorAll("[data-debug-num]").forEach(btn=>{
+        btn.addEventListener("click",(e)=>{
+          e.preventDefault();
+          if(pwInput){
+            pwInput.value = (String(pwInput.value || "") + btn.dataset.debugNum).slice(0,8);
+            try{pwInput.focus({preventScroll:true});}catch(err){try{pwInput.focus();}catch(_){}}
+          }
+        });
+      });
+      if(pwBack) pwBack.addEventListener("click",(e)=>{e.preventDefault(); if(pwInput) pwInput.value = String(pwInput.value || "").slice(0,-1);});
+      if(pwClear) pwClear.addEventListener("click",(e)=>{e.preventDefault(); if(pwInput) pwInput.value = "";});
 
       function tryUnlockDebug(){
         const value = pwInput ? String(pwInput.value || "").trim() : "";
