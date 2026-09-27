@@ -3239,6 +3239,7 @@ body.quizPageOpen #messageBox{
   setVH();
   window.addEventListener("resize", setVH, {passive:true});
   window.addEventListener("orientationchange", setVH, {passive:true});
+  window.addEventListener("pageshow", setVH, {passive:true});
   if(window.visualViewport){
     window.visualViewport.addEventListener("resize", setVH, {passive:true});
     window.visualViewport.addEventListener("scroll", setVH, {passive:true});
@@ -3260,7 +3261,8 @@ body.quizPageOpen #messageBox{
       if(
         msg === "Script error." ||
         msg === "Script error" ||
-        msg.indexOf("ResizeObserver loop") >= 0
+        msg.indexOf("ResizeObserver loop") >= 0 ||
+        msg.indexOf("ResizeObserver loop completed") >= 0
       ){
         return true;
       }
@@ -3281,7 +3283,7 @@ body.quizPageOpen #messageBox{
       var box = document.getElementById("runtimeErrorBox");
       if(box){
         box.style.display = "block";
-        box.textContent = "Three.js did not load. Check internet connection or CDN access.";
+        box.textContent = "The 3D engine did not load. Reload the page. If this continues, use a current browser with WebGL enabled.";
       }
       return;
     }
@@ -3515,7 +3517,7 @@ const wrap = document.getElementById("gameWrap");
         obj.freed = freed;
         if(obj.aura) obj.aura.visible = !freed;
         if(obj.emojiPlane && obj.emojiPlane.material){
-          if(obj.emojiPlane.material.map) obj.emojiPlane.material.map.dispose?.();
+          if(obj.emojiPlane.material.map) if(obj.emojiPlane.material.map.dispose) obj.emojiPlane.material.map.dispose();
           obj.emojiPlane.material.map = makeEmojiVillagerTexture(obj.idx, freed);
           obj.emojiPlane.material.needsUpdate = true;
         }
@@ -4516,7 +4518,7 @@ const wrap = document.getElementById("gameWrap");
         obj.freed = true;
         if(obj.aura) obj.aura.visible = false;
         if(obj.emojiPlane && obj.emojiPlane.material){
-          if(obj.emojiPlane.material.map) obj.emojiPlane.material.map.dispose?.();
+          if(obj.emojiPlane.material.map) if(obj.emojiPlane.material.map.dispose) obj.emojiPlane.material.map.dispose();
           obj.emojiPlane.material.map = makeEmojiVillagerTexture(idx, true);
           obj.emojiPlane.material.needsUpdate = true;
         }
@@ -5556,7 +5558,7 @@ function addTablet(){
       padPointerActive = false;
       dragging = false;
       document.querySelectorAll('[data-hold].active,.padBtn.active').forEach(btn=>btn.classList.remove('active'));
-      try{ renderer?.domElement?.blur?.(); }catch(e){}
+      try{ if(renderer && renderer.domElement && renderer.domElement.blur) renderer.domElement.blur(); }catch(e){}
     }
     window.stopAllControls = stopAllControls;
     window.addEventListener('blur',()=>stopAllControls('window-blur'));
@@ -5626,7 +5628,7 @@ function addTablet(){
       const down = ev => {
         ev.preventDefault();
         padPointerActive = true;
-        try{btn.setPointerCapture?.(ev.pointerId);}catch(e){}
+        try{if(btn.setPointerCapture && ev.pointerId != null) btn.setPointerCapture(ev.pointerId);}catch(e){}
         btn.classList.add("active");
         setMoveKey(action,true);
       };
@@ -5634,7 +5636,7 @@ function addTablet(){
         ev.preventDefault();
         btn.classList.remove("active");
         setMoveKey(action,false);
-        try{btn.releasePointerCapture?.(ev.pointerId);}catch(e){}
+        try{if(btn.releasePointerCapture && ev.pointerId != null) btn.releasePointerCapture(ev.pointerId);}catch(e){}
         if(!document.querySelector('[data-hold].active')) padPointerActive = false;
       };
       btn.addEventListener("pointerdown",down);
@@ -5644,6 +5646,12 @@ function addTablet(){
       btn.addEventListener("lostpointercapture",up);
       btn.addEventListener("touchend",up,{passive:false});
       btn.addEventListener("touchcancel",up,{passive:false});
+      if(!window.PointerEvent){
+        btn.addEventListener("touchstart",down,{passive:false});
+        btn.addEventListener("mousedown",down);
+        btn.addEventListener("mouseup",up);
+        btn.addEventListener("mouseleave",up);
+      }
       btn.addEventListener("contextmenu",ev=>ev.preventDefault());
       btn.setAttribute("draggable","false");
     });
@@ -5651,7 +5659,7 @@ function addTablet(){
     renderer.domElement.addEventListener("pointerdown",(e)=>{
       if(modalShade.style.display==="flex" || modalShade.style.display==="block") return;
       dragging = true; lastX=e.clientX; lastY=e.clientY;
-      renderer.domElement.setPointerCapture?.(e.pointerId);
+      if(renderer.domElement.setPointerCapture && e.pointerId != null) renderer.domElement.setPointerCapture(e.pointerId);
     });
     renderer.domElement.addEventListener("pointermove",(e)=>{
       if(!dragging) return;
@@ -5665,6 +5673,41 @@ function addTablet(){
     renderer.domElement.addEventListener("pointercancel",()=>dragging=false);
     renderer.domElement.addEventListener("pointerleave",()=>dragging=false);
     renderer.domElement.addEventListener("lostpointercapture",()=>dragging=false);
+    if(!window.PointerEvent){
+      renderer.domElement.addEventListener("touchstart",(e)=>{
+        if(modalShade.style.display==="flex" || modalShade.style.display==="block") return;
+        const t=e.touches && e.touches[0];
+        if(!t) return;
+        e.preventDefault();
+        dragging=true; lastX=t.clientX; lastY=t.clientY;
+      },{passive:false});
+      renderer.domElement.addEventListener("touchmove",(e)=>{
+        if(!dragging) return;
+        const t=e.touches && e.touches[0];
+        if(!t) return;
+        e.preventDefault();
+        const dx=t.clientX-lastX, dy=t.clientY-lastY;
+        lastX=t.clientX; lastY=t.clientY;
+        camera.rotation.y -= dx*.0032;
+        camera.rotation.x -= dy*.0028;
+        camera.rotation.x = Math.max(-1.1,Math.min(1.1,camera.rotation.x));
+      },{passive:false});
+      renderer.domElement.addEventListener("touchend",()=>dragging=false,{passive:true});
+      renderer.domElement.addEventListener("touchcancel",()=>dragging=false,{passive:true});
+      renderer.domElement.addEventListener("mousedown",(e)=>{
+        if(modalShade.style.display==="flex" || modalShade.style.display==="block") return;
+        dragging=true; lastX=e.clientX; lastY=e.clientY;
+      });
+      window.addEventListener("mousemove",(e)=>{
+        if(!dragging) return;
+        const dx=e.clientX-lastX, dy=e.clientY-lastY;
+        lastX=e.clientX; lastY=e.clientY;
+        camera.rotation.y -= dx*.0032;
+        camera.rotation.x -= dy*.0028;
+        camera.rotation.x = Math.max(-1.1,Math.min(1.1,camera.rotation.x));
+      });
+      window.addEventListener("mouseup",()=>dragging=false);
+    }
     window.addEventListener("contextmenu",e=>e.preventDefault());
 
     function collides(x,z){
@@ -6689,7 +6732,7 @@ function openPuzzle(){
     let activeEntry = null;
 
     function clampInt(v,min,max){
-      let n = parseInt(String(v ?? "").trim(),10);
+      let n = parseInt(String(v == null ? "" : v).trim(),10);
       if(!Number.isFinite(n)) n = min;
       return Math.max(min,Math.min(max,n));
     }
