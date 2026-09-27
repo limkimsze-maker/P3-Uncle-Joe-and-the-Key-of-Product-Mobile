@@ -3450,19 +3450,6 @@ const wrap = document.getElementById("gameWrap");
       if(doorObj.mesh) doorObj.mesh.position.y = isOpen ? openY : closedY;
     }
 
-
-    // Defensive Three.js colour setter.
-    // Some Chromium/Brave WebGL paths can temporarily expose a material/light
-    // without a Color/Emissive object during restoration. Never let that
-    // cosmetic update stop the game.
-    function safeSetHex(colorValue, hex){
-      if(colorValue && typeof colorValue.setHex === "function"){
-        colorValue.setHex(hex);
-        return true;
-      }
-      return false;
-    }
-
     function applyProgressVisuals(){
       if(window.firstDoor){
         setDoorVisual(window.firstDoor,8.8,1.9,doorOpen);
@@ -3502,8 +3489,8 @@ const wrap = document.getElementById("gameWrap");
         const lit = torchChallengeDone.has(obj.idx);
         obj.lit = lit;
         if(obj.button && obj.button.material){
-          safeSetHex(obj.button.material.color, lit ? 0xffb703 : 0xd9952b);
-          safeSetHex(obj.button.material.emissive, lit ? 0xff8c00 : 0x3a1b03);
+          obj.button.material.color.setHex(lit ? 0xffb703 : 0xd9952b);
+          obj.button.material.emissive.setHex(lit ? 0xff8c00 : 0x3a1b03);
           obj.button.material.emissiveIntensity = lit ? .95 : .18;
           obj.button.material.needsUpdate = true;
         }
@@ -3521,8 +3508,8 @@ const wrap = document.getElementById("gameWrap");
         const done = scarabChallengeDone.has(obj.idx);
         obj.alive = !done;
         if(obj.body && obj.body.material){
-          safeSetHex(obj.body.material.color, done ? 0x39ff88 : 0x0f5132);
-          safeSetHex(obj.body.material.emissive, done ? 0x39ff88 : 0x15803d);
+          obj.body.material.color.setHex(done ? 0x39ff88 : 0x0f5132);
+          obj.body.material.emissive.setHex(done ? 0x39ff88 : 0x15803d);
           obj.body.material.emissiveIntensity = done ? 1.15 : .45;
           obj.body.material.needsUpdate = true;
         }
@@ -3544,13 +3531,13 @@ const wrap = document.getElementById("gameWrap");
           obj.emojiPlane.material.needsUpdate = true;
         }
         if(obj.ring && obj.ring.material){
-          safeSetHex(obj.ring.material.color, freed ? 0x86efac : 0xc084fc);
-          safeSetHex(obj.ring.material.emissive, freed ? 0x22c55e : 0x9333ea);
+          obj.ring.material.color.setHex(freed ? 0x86efac : 0xc084fc);
+          obj.ring.material.emissive.setHex(freed ? 0x22c55e : 0x9333ea);
           obj.ring.material.emissiveIntensity = freed ? 1.25 : .9;
           obj.ring.material.needsUpdate = true;
         }
         if(obj.light){
-          safeSetHex(obj.light.color, freed ? 0x86efac : 0xc084fc);
+          obj.light.color.setHex(freed ? 0x86efac : 0xc084fc);
           obj.light.intensity = freed ? 1.7 : 1.15;
         }
       });
@@ -3934,8 +3921,8 @@ const wrap = document.getElementById("gameWrap");
         if(obj.previewRing) obj.previewRing.visible = active;
 
         if(obj.button && obj.button.material && !obj.lit){
-          safeSetHex(obj.button.material.color, active ? 0xf2b84b : 0x3a210c);
-          safeSetHex(obj.button.material.emissive, active ? 0x6f4300 : 0x060200);
+          obj.button.material.color.setHex(active ? 0xf2b84b : 0x3a210c);
+          obj.button.material.emissive.setHex(active ? 0x6f4300 : 0x060200);
           obj.button.material.emissiveIntensity = active ? 0.42 : 0.04;
           obj.button.material.needsUpdate = true;
         }
@@ -3947,13 +3934,13 @@ const wrap = document.getElementById("gameWrap");
       if(!obj || obj.lit) return;
       obj.lit = true;
       obj.group.visible = true;
-      safeSetHex(obj.button.material.color, 0x5a2a0b);
-      safeSetHex(obj.button.material.emissive, 0x221000);
+      obj.button.material.color.setHex(0x5a2a0b);
+      obj.button.material.emissive.setHex(0x221000);
       if(obj.previewLight) obj.previewLight.intensity = 0;
       if(obj.previewRing) obj.previewRing.visible = false;
       obj.flame.visible = true;
-      safeSetHex(obj.flame.material.color, 0xffb129);
-      safeSetHex(obj.flame.material.emissive, 0xff7a00);
+      obj.flame.material.color.setHex(0xffb129);
+      obj.flame.material.emissive.setHex(0xff7a00);
       obj.flame.material.emissiveIntensity = 1.9;
       obj.light.intensity = LOW_POWER ? 1.15 : 1.65;
       animated.push({type:"torch",flame:obj.flame,light:obj.light,base:1.4,t:Math.random()*10});
@@ -4415,14 +4402,14 @@ const wrap = document.getElementById("gameWrap");
         obj.lit = lit;
         obj.group.visible = !!(restorationKeyCollected && sunGateChallengeStarted && !finalEscapeStarted);
         if(obj.seal && obj.seal.material){
-          safeSetHex(obj.seal.material.color, lit ? 0xfacc15 : 0x51310a);
-          safeSetHex(obj.seal.material.emissive, lit ? 0xffb703 : 0x180b02);
+          obj.seal.material.color.setHex(lit ? 0xfacc15 : 0x51310a);
+          obj.seal.material.emissive.setHex(lit ? 0xffb703 : 0x180b02);
           obj.seal.material.emissiveIntensity = lit ? 1.45 : .25;
           obj.seal.material.needsUpdate = true;
         }
         if(obj.base && obj.base.material){
-          safeSetHex(obj.base.material.color, lit ? 0x7a4a05 : 0x4b2604);
-          safeSetHex(obj.base.material.emissive, lit ? 0xf59e0b : 0x140601);
+          obj.base.material.color.setHex(lit ? 0x7a4a05 : 0x4b2604);
+          obj.base.material.emissive.setHex(lit ? 0xf59e0b : 0x140601);
           obj.base.material.emissiveIntensity = lit ? .55 : .18;
           obj.base.material.needsUpdate = true;
         }
@@ -4430,8 +4417,8 @@ const wrap = document.getElementById("gameWrap");
           obj.rays.visible = true;
           obj.rays.children.forEach(r=>{
             if(r.material){
-              safeSetHex(r.material.color, lit ? 0xffd86b : 0x5a3507);
-              safeSetHex(r.material.emissive, lit ? 0xf59e0b : 0x170801);
+              r.material.color.setHex(lit ? 0xffd86b : 0x5a3507);
+              r.material.emissive.setHex(lit ? 0xf59e0b : 0x170801);
               r.material.emissiveIntensity = lit ? .75 : .16;
             }
           });
@@ -4545,18 +4532,18 @@ const wrap = document.getElementById("gameWrap");
           obj.emojiPlane.material.needsUpdate = true;
         }
         if(obj.ring && obj.ring.material){
-          safeSetHex(obj.ring.material.color, 0x86efac);
-          safeSetHex(obj.ring.material.emissive, 0x22c55e);
+          obj.ring.material.color.setHex(0x86efac);
+          obj.ring.material.emissive.setHex(0x22c55e);
           obj.ring.material.emissiveIntensity = 1.25;
           obj.ring.material.needsUpdate = true;
         }
         if(obj.light){
-          safeSetHex(obj.light.color, 0x86efac);
+          obj.light.color.setHex(0x86efac);
           obj.light.intensity = 1.7;
         }
         if(obj.base && obj.base.material){
-          safeSetHex(obj.base.material.color, 0x14532d);
-          safeSetHex(obj.base.material.emissive, 0x22c55e);
+          obj.base.material.color.setHex(0x14532d);
+          obj.base.material.emissive.setHex(0x22c55e);
           obj.base.material.emissiveIntensity = .35;
           obj.base.material.needsUpdate = true;
         }
@@ -4685,19 +4672,19 @@ const wrap = document.getElementById("gameWrap");
         const done = sandChallengeDone.has(obj.idx);
         const active = !done && obj.idx === sandChallengeDone.size;
         if(obj.button && obj.button.material){
-          safeSetHex(obj.button.material.color, done ? 0x5a2a0b : (active ? 0x22c55e : 0xd9952b));
-          safeSetHex(obj.button.material.emissive, done ? 0x221000 : (active ? 0x16a34a : 0x3a1b03));
+          obj.button.material.color.setHex(done ? 0x5a2a0b : (active ? 0x22c55e : 0xd9952b));
+          obj.button.material.emissive.setHex(done ? 0x221000 : (active ? 0x16a34a : 0x3a1b03));
           obj.button.material.emissiveIntensity = active ? .75 : .18;
           obj.button.material.needsUpdate = true;
         }
         if(obj.stepPlank && obj.stepPlank.material){
-          safeSetHex(obj.stepPlank.material.color, done ? 0xfde68a : (active ? 0xe0a44a : 0xb8792c));
-          safeSetHex(obj.stepPlank.material.emissive, done ? 0xfacc15 : (active ? 0x1d4ed8 : 0x2b1304));
+          obj.stepPlank.material.color.setHex(done ? 0xfde68a : (active ? 0xe0a44a : 0xb8792c));
+          obj.stepPlank.material.emissive.setHex(done ? 0xfacc15 : (active ? 0x1d4ed8 : 0x2b1304));
           obj.stepPlank.material.emissiveIntensity = done ? .95 : (active ? .42 : .16);
           obj.stepPlank.material.needsUpdate = true;
         }
         if(obj.light){
-          safeSetHex(obj.light.color, done ? 0xfacc15 : (active ? 0x93c5fd : 0xffd86b));
+          obj.light.color.setHex(done ? 0xfacc15 : (active ? 0x93c5fd : 0xffd86b));
           obj.light.intensity = done ? 1.65 : (active ? 1.15 : .55);
         }
       }
@@ -4842,25 +4829,25 @@ const wrap = document.getElementById("gameWrap");
 
       // Child-friendly result: the green scarab symbol becomes a friendly golden scarab tile.
       s.group.visible = true;
-      safeSetHex(s.body.material.color, 0xfacc15);
-      safeSetHex(s.body.material.emissive, 0xf59e0b);
+      s.body.material.color.setHex(0xfacc15);
+      s.body.material.emissive.setHex(0xf59e0b);
       s.body.material.emissiveIntensity = 1.05;
       if(s.glow){
-        safeSetHex(s.glow.color, 0xfacc15);
+        s.glow.color.setHex(0xfacc15);
         s.glow.intensity = LOW_POWER ? 1.5 : 2.0;
       }
       if(s.ring && s.ring.material){
-        safeSetHex(s.ring.material.color, 0xfff7ad);
+        s.ring.material.color.setHex(0xfff7ad);
         s.ring.material.opacity = .95;
       }
       if(s.pad && s.pad.material){
-        safeSetHex(s.pad.material.color, 0x7a4a05);
-        safeSetHex(s.pad.material.emissive, 0xfacc15);
+        s.pad.material.color.setHex(0x7a4a05);
+        s.pad.material.emissive.setHex(0xfacc15);
         s.pad.material.emissiveIntensity = .7;
         s.pad.material.needsUpdate = true;
       }
       if(s.padRing && s.padRing.material){
-        safeSetHex(s.padRing.material.color, 0xfff7ad);
+        s.padRing.material.color.setHex(0xfff7ad);
         s.padRing.material.opacity = .98;
       }
 
@@ -5793,12 +5780,12 @@ function addTablet(){
         if(!s) return;
         const active = s.idx === next && s.alive && !emeraldCollected;
         if(s.pad && s.pad.material){
-          safeSetHex(s.pad.material.emissive, active ? 0xfacc15 : (s.alive ? 0x0f5132 : 0xfacc15));
+          s.pad.material.emissive.setHex(active ? 0xfacc15 : (s.alive ? 0x0f5132 : 0xfacc15));
           s.pad.material.emissiveIntensity = active ? 1.05 : (s.alive ? .38 : .7);
           s.pad.material.needsUpdate = true;
         }
         if(s.padRing && s.padRing.material){
-          safeSetHex(s.padRing.material.color, active ? 0xfff7ad : (s.alive ? 0xbbf7d0 : 0xfff7ad));
+          s.padRing.material.color.setHex(active ? 0xfff7ad : (s.alive ? 0xbbf7d0 : 0xfff7ad));
           s.padRing.material.opacity = active ? 1 : (s.alive ? .85 : .98);
         }
       });
