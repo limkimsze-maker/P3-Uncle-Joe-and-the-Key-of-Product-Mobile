@@ -1,0 +1,30 @@
+name: Diagnose Resume Logic
+'on':
+  push:
+    paths:
+      - .github/workflows/diagnose-unclejoe.yml
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect resume save reset logic
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path("index.html").read_text(encoding="utf-8")
+          low=s.lower()
+          terms=["function saveprogress","function loadprogress","saveprogress(","loadprogress(","localstorage","coverstartbtn","coverresetbtntop","camera.position","rubycollected","topazcollected","emeraldcollected","sapphirecollected","wandcollected","villagerfreedcount","sunsealcount","restorationkeycollected"]
+          for term in terms:
+              print("\n====",term,"====")
+              start=0; n=0
+              while True:
+                  i=low.find(term,start)
+                  if i<0 or n>=12: break
+                  print("\n---",i,"---")
+                  print(s[max(0,i-1600):min(len(s),i+3200)])
+                  start=i+len(term); n+=1
+          PY
