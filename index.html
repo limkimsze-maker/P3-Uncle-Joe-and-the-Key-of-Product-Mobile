@@ -64,6 +64,7 @@
       border:2px solid rgba(255,216,107,.56);
       background:linear-gradient(180deg,rgba(74,43,13,.88),rgba(19,10,4,.86));
       box-shadow:0 8px 30px rgba(0,0,0,.48), inset 0 0 26px rgba(255,188,64,.08);
+      -webkit-backdrop-filter:blur(6px);
       backdrop-filter:blur(6px);
     }
 
@@ -253,12 +254,14 @@
       justify-content:center;
       padding:calc(10px + var(--safeTop)) 10px calc(10px + var(--safeBottom));
       background:rgba(0,0,0,.62);
+      -webkit-backdrop-filter:blur(5px);
       backdrop-filter:blur(5px);
       touch-action:auto;
     }
 
     #algoModal{
       width:min(1180px,100%);
+      max-height:92vh;
       max-height:min(92dvh,900px);
       overflow:auto;
       border-radius:24px;
@@ -3241,17 +3244,28 @@ body.quizPageOpen #messageBox{
 })();
 </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 
   <script>
   (() => {
     "use strict";
 
     window.addEventListener("error", function(e){
+      var msg = String((e && e.message) || "");
+      // Some privacy-focused browsers and embedded WebViews may block optional
+      // cross-origin scripts and report only "Script error.". Do not treat that
+      // browser-level noise as a game failure.
+      if(
+        msg === "Script error." ||
+        msg === "Script error" ||
+        msg.indexOf("ResizeObserver loop") >= 0
+      ){
+        return true;
+      }
       var box = document.getElementById("runtimeErrorBox");
       if(box){
         box.style.display = "block";
-        box.textContent = "Game error: " + (e.message || "Unknown error") + ". Please send this screenshot to check.";
+        box.textContent = "Game error: " + (msg || "Unknown error") + ". Please send this screenshot to check.";
       }
     });
     window.addEventListener("unhandledrejection", function(e){
@@ -3277,7 +3291,13 @@ const wrap = document.getElementById("gameWrap");
     const chamberText = document.getElementById("chamberText");
     const jewelText = document.getElementById("jewelText");
     const soundBtn = document.getElementById("soundBtn");
-    const LOW_POWER = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || Math.min(window.innerWidth, window.innerHeight) < 700;
+    const IOS_TOUCH_DEVICE =
+      /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && (navigator.maxTouchPoints || 0) > 1);
+    const LOW_POWER =
+      /Android/i.test(navigator.userAgent) ||
+      IOS_TOUCH_DEVICE ||
+      Math.min(window.innerWidth, window.innerHeight) < 700;
 
     let soundOn = true;
     let audioCtx = null;
