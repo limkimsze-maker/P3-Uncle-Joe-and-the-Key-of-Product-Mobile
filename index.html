@@ -2976,6 +2976,15 @@ body.quizPageOpen #messageBox{
       box-shadow:0 4px 0 #1b1006,0 9px 18px rgba(0,0,0,.28) !important;
     }
 
+
+    /* Keep native finger scrolling available across the quiz keypad on Chrome. */
+    @media (pointer:coarse) {
+      body.quizPageOpen #modalShade.pageScrollMode button,
+      body.quizPageOpen #modalShade.pageScrollMode .keyBtn,
+      body.quizPageOpen #modalShade.pageScrollMode .pillBtn {
+        touch-action:pan-y !important;
+      }
+    }
 </style>
 </head>
 
@@ -5551,12 +5560,14 @@ function addTablet(){
 
     const moveKeys = {forward:false,back:false,left:false,right:false,lookLeft:false,lookRight:false,lookUp:false,lookDown:false};
     let dragging = false, lastX = 0, lastY = 0;
+    let pendingLookYaw = 0, pendingLookPitch = 0;
     let padPointerActive = false;
     function setMoveKey(action,value){ if(action in moveKeys) moveKeys[action]=value; }
     function stopAllControls(reason=""){
       Object.keys(moveKeys).forEach(k=>moveKeys[k]=false);
       padPointerActive = false;
       dragging = false;
+      pendingLookYaw = pendingLookPitch = 0;
       document.querySelectorAll('[data-hold].active,.padBtn.active').forEach(btn=>btn.classList.remove('active'));
       try{ if(renderer && renderer.domElement && renderer.domElement.blur) renderer.domElement.blur(); }catch(e){}
     }
@@ -5665,9 +5676,8 @@ function addTablet(){
       if(!dragging) return;
       const dx=e.clientX-lastX, dy=e.clientY-lastY;
       lastX=e.clientX; lastY=e.clientY;
-      camera.rotation.y -= dx*.0032;
-      camera.rotation.x -= dy*.0028;
-      camera.rotation.x = Math.max(-1.1,Math.min(1.1,camera.rotation.x));
+      pendingLookYaw -= dx*.0030;
+      pendingLookPitch -= dy*.0026;
     });
     renderer.domElement.addEventListener("pointerup",()=>dragging=false);
     renderer.domElement.addEventListener("pointercancel",()=>dragging=false);
@@ -5729,6 +5739,13 @@ function addTablet(){
 
     function movePlayer(dt){
       if(modalShade.style.display==="flex" || modalShade.style.display==="block" || document.getElementById("endingPanel").style.display==="flex") return;
+      const lookEase = 1 - Math.exp(-18*dt);
+      const yawStep = pendingLookYaw * lookEase;
+      const pitchStep = pendingLookPitch * lookEase;
+      camera.rotation.y += yawStep;
+      camera.rotation.x += pitchStep;
+      pendingLookYaw -= yawStep;
+      pendingLookPitch -= pitchStep;
       const lookSpeed = 1.8*dt;
       if(moveKeys.lookLeft) camera.rotation.y += lookSpeed;
       if(moveKeys.lookRight) camera.rotation.y -= lookSpeed;
