@@ -3246,7 +3246,7 @@ body.quizPageOpen #messageBox{
 })();
 </script>
 
-  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script crossorigin="anonymous" src="./vendor/three.min.js"></script>
 
   <script>
   (() => {
@@ -3588,7 +3588,25 @@ const wrap = document.getElementById("gameWrap");
     camera.position.set(0, 1.65, 6.5);
     camera.rotation.order = "YXZ";
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !LOW_POWER, powerPreference:"default" });
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: !LOW_POWER, powerPreference:"default" });
+    } catch (error) {
+      const box = document.getElementById("runtimeErrorBox");
+      if (box) {
+        box.style.display = "block";
+        box.textContent = "This device cannot start the 3D game. Enable hardware acceleration or open it in an up-to-date browser with WebGL support.";
+      }
+      return;
+    }
+    renderer.domElement.addEventListener("webglcontextlost", function(event) {
+      event.preventDefault();
+      const box = document.getElementById("runtimeErrorBox");
+      if (box) {
+        box.style.display = "block";
+        box.textContent = "The 3D graphics stopped. Reload the page to continue from your saved progress.";
+      }
+    });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, LOW_POWER ? 1.25 : 1.75));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = !LOW_POWER;
